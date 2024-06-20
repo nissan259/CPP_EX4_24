@@ -17,14 +17,14 @@ private:
     std::vector<Node<T>*> nodes;
     size_t current;
     void buildHeap(Node<T>* node);
+    void heapify();
 };
 
 template <typename T>
 HeapIterator<T>::HeapIterator(Node<T>* root) : current(0) {
     if (root) {
         buildHeap(root);
-        std::make_heap(nodes.begin(), nodes.end(), [](Node<T>* a, Node<T>* b) { return a->value > b->value; });  // Min-heap
-        std::sort_heap(nodes.begin(), nodes.end(), [](Node<T>* a, Node<T>* b) { return a->value > b->value; });   // Min-heap
+        heapify();
     }
 }
 
@@ -35,6 +35,12 @@ void HeapIterator<T>::buildHeap(Node<T>* node) {
     for (auto& child : node->children) {
         buildHeap(child.get());
     }
+}
+
+template <typename T>
+void HeapIterator<T>::heapify() {
+    std::make_heap(nodes.begin(), nodes.end(), [](Node<T>* a, Node<T>* b) { return a->value > b->value; }); // Min-heap
+    std::sort_heap(nodes.begin(), nodes.end(), [](Node<T>* a, Node<T>* b) { return a->value > b->value; }); // Min-heap
 }
 
 template <typename T>
@@ -52,7 +58,7 @@ HeapIterator<T>& HeapIterator<T>::operator++() {
 
 template <typename T>
 bool HeapIterator<T>::operator!=(const HeapIterator<T>& other) const {
-    return current != nodes.size();
+    return current != other.current;
 }
 
 #endif // HEAP_ITERATOR_HPP
