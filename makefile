@@ -16,7 +16,7 @@ all: $(TARGET)
 
 # Rule to build the target executable
 $(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) -lsfml-graphics -lsfml-window -lsfml-system
 
 # Rule to build object files from source files
 %.o: %.cpp

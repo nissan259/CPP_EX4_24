@@ -28,6 +28,7 @@ public:
 
     void add_root(const T& value);
     void add_sub_node(const T& parent_value, const T& child_value);
+    Node<T>* getRoot() const { return root.get(); }
 
     BFSIterator<T> begin_bfs_scan();
     BFSIterator<T> end_bfs_scan();

@@ -4,137 +4,144 @@
 #include <algorithm>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <cmath> // Include for mathematical functions
 
 using namespace std;
 
+// Function to draw the tree nodes and edges
+void drawTree(sf::RenderWindow &window, Node<int>* node, sf::Vector2f position, float horizontalSpacing, float verticalSpacing) {
+    if (!node) return;
+
+    sf::CircleShape circle(20);
+    circle.setFillColor(sf::Color::Green);
+    circle.setPosition(position.x - circle.getRadius(), position.y - circle.getRadius()); // Center the circle
+    window.draw(circle);
+
+    // Draw value in the node
+    sf::Font font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
+        cerr << "Could not load font" << endl;
+        return;
+    }
+    sf::Text text;
+    text.setFont(font);
+    text.setString(to_string(node->value));
+    text.setCharacterSize(20);
+    text.setFillColor(sf::Color::White);
+    text.setPosition(position.x - 10, position.y - 15); // Center the text
+    window.draw(text);
+
+    float angleStep = 360.0f / node->children.size(); // Adjust the angle step based on the number of children
+    int childIndex = 0;
+    for (auto& child : node->children) {
+        if (child) {
+            float angle = -90 + childIndex * angleStep;
+            float radianAngle = angle * M_PI / 180.0f;
+            sf::Vector2f childPos = position + sf::Vector2f(cos(radianAngle) * horizontalSpacing, verticalSpacing);
+            sf::Vertex line[] = {
+                sf::Vertex(position + sf::Vector2f(0, 20)),
+                sf::Vertex(childPos + sf::Vector2f(0, -20))
+            };
+            window.draw(line, 2, sf::Lines);
+
+            drawTree(window, child.get(), childPos, horizontalSpacing * 0.75f, verticalSpacing);
+            childIndex++;
+        }
+    }
+}
+
+// Function to calculate the total levels in the tree
+template <typename T>
+int calculateTotalLevels(Node<T>* node) {
+    if (!node) return 0;
+    int maxDepth = 0;
+    for (auto& child : node->children) {
+        maxDepth = max(maxDepth, calculateTotalLevels(child.get()));
+    }
+    return maxDepth + 1;
+}
+
+// Function to visualize the tree
+void visualizeTree(sf::RenderWindow& window, tree<int>& tree) {
+    sf::Font font;
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
+        cerr << "Could not load font" << endl;
+        return;
+    }
+
+    // Get the root node
+    Node<int>* root = tree.getRoot();
+    int totalLevels = calculateTotalLevels(root);
+
+    // Calculate position for drawing
+    sf::Vector2f startPosition(window.getSize().x / 2, 50);
+    float horizontalSpacing = window.getSize().x / (pow(2, totalLevels - 1) + 1);
+    float verticalSpacing = window.getSize().y / (totalLevels + 1);
+
+    // Draw the tree
+    drawTree(window, root, startPosition, horizontalSpacing, verticalSpacing);
+}
+
 int main() {
-    // Create a ternary tree (k=3)
-    tree<int> ktree(3);
+    // Create a k-5 tree
+    tree<int> ktree(5);
 
     ktree.add_root(1);
     ktree.add_sub_node(1, 2);
     ktree.add_sub_node(1, 3);
     ktree.add_sub_node(1, 4);
-    ktree.add_sub_node(2, 5);
-    ktree.add_sub_node(2, 6);
-    ktree.add_sub_node(3, 7);
+    ktree.add_sub_node(1, 5);
+    ktree.add_sub_node(1, 6);
+    ktree.add_sub_node(2, 7);
+    ktree.add_sub_node(2, 8);
+    ktree.add_sub_node(2, 9);
+    ktree.add_sub_node(3, 10);
+    ktree.add_sub_node(3, 11);
 
-    cout << "Pre-order Traversal (Ternary): ";
+    cout << "Pre-order Traversal (k-5): ";
     for (auto it = ktree.begin_pre_order(); it != ktree.end_pre_order(); ++it) {
         cout << *it << " ";
     }
     cout << endl;
 
-    cout << "Post-order Traversal (Ternary): ";
+    cout << "Post-order Traversal (k-5): ";
     for (auto it = ktree.begin_post_order(); it != ktree.end_post_order(); ++it) {
         cout << *it << " ";
     }
     cout << endl;
 
-    cout << "In-order Traversal (Ternary): ";
+    cout << "In-order Traversal (k-5): ";
     for (auto it = ktree.begin_in_order(); it != ktree.end_in_order(); ++it) {
         cout << *it << " ";
     }
     cout << endl;
 
-    cout << "BFS Traversal (Ternary): ";
+    cout << "BFS Traversal (k-5): ";
     for (auto it = ktree.begin_bfs_scan(); it != ktree.end_bfs_scan(); ++it) {
         cout << *it << " ";
     }
     cout << endl;
 
-    cout << "DFS Traversal (Ternary): ";
+    cout << "DFS Traversal (k-5): ";
     for (auto it = ktree.begin_dfs_scan(); it != ktree.end_dfs_scan(); ++it) {
         cout << *it << " ";
     }
     cout << endl;
 
-    // Create a binary tree (k=2)
-    tree<int> btree(2);
+    // Create a window to visualize the k-5 tree
+    sf::RenderWindow window(sf::VideoMode(1200, 800), "Display Orel and K-5 Tree");
 
-    btree.add_root(7);
-    btree.add_sub_node(7, 10);
-    btree.add_sub_node(7, 3);
-    btree.add_sub_node(10, 4);
-    btree.add_sub_node(10, 8);
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
 
-    cout << "Pre-order Traversal (Binary): ";
-    for (auto it = btree.begin_pre_order(); it != btree.end_pre_order(); ++it) {
-        cout << *it << " ";
+        window.clear(sf::Color::Black);
+        visualizeTree(window, ktree);
+        window.display();
     }
-    cout << endl;
-
-    cout << "Post-order Traversal (Binary): ";
-    for (auto it = btree.begin_post_order(); it != btree.end_post_order(); ++it) {
-        cout << *it << " ";
-    }
-    cout << endl;
-
-    cout << "In-order Traversal (Binary): ";
-    for (auto it = btree.begin_in_order(); it != btree.end_in_order(); ++it) {
-        cout << *it << " ";
-    }
-    cout << endl;
-
-    cout << "BFS Traversal (Binary): ";
-    for (auto it = btree.begin_bfs_scan(); it != btree.end_bfs_scan(); ++it) {
-        cout << *it << " ";
-    }
-    cout << endl;
-
-    cout << "DFS Traversal (Binary): ";
-    for (auto it = btree.begin_dfs_scan(); it != btree.end_dfs_scan(); ++it) {
-        cout << *it << " ";
-    }
-    cout << endl;
-
-    // Collect heap values
-    vector<int> heap_values;
-    for (auto it = btree.begin_heap(); it != btree.end_heap(); ++it) {
-        heap_values.push_back(*it);
-    }
-
-    // Sort values in ascending order
-    sort(heap_values.begin(), heap_values.end());
-
-    // Print heap values in ascending order
-    cout << "Heap Traversal: ";
-    for (const auto& val : heap_values) {
-        cout << val << " ";
-    }
-    cout << endl;
-
-    // Additional scenario: Adding more nodes to the binary tree
-    btree.add_sub_node(4, 1);
-    btree.add_sub_node(4, 6);
-
-    cout << "Updated BFS Traversal (Binary): ";
-    for (auto it = btree.begin_bfs_scan(); it != btree.end_bfs_scan(); ++it) {
-        cout << *it << " ";
-    }
-    cout << endl;
-
-    cout << "Updated DFS Traversal (Binary): ";
-    for (auto it = btree.begin_dfs_scan(); it != btree.end_dfs_scan(); ++it) {
-        cout << *it << " ";
-    }
-    cout << endl;
-
-    // Collect updated heap values
-    heap_values.clear();
-    for (auto it = btree.begin_heap(); it != btree.end_heap(); ++it) {
-        heap_values.push_back(*it);
-    }
-
-    // Sort updated values in ascending order
-    sort(heap_values.begin(), heap_values.end());
-
-    // Print updated heap values in ascending order
-    cout << "Updated Heap Traversal: ";
-    for (const auto& val : heap_values) {
-        cout << val << " ";
-    }
-    cout << endl;
 
     return 0;
 }
