@@ -119,23 +119,23 @@ PreOrderIterator<T> tree<T>::end_pre_order() {
 
 template <typename T>
 PostOrderIterator<T> tree<T>::begin_post_order() {
-    return PostOrderIterator<T>(root.get());
+    return PostOrderIterator<T>(root.get(), k);
 }
+
 
 template <typename T>
 PostOrderIterator<T> tree<T>::end_post_order() {
-    return PostOrderIterator<T>(nullptr);
+    return PostOrderIterator<T>(nullptr, k);
 }
+
 
 template <typename T>
 InOrderIterator<T> tree<T>::begin_in_order() {
-    return InOrderIterator<T>(root.get());
-}
+        return InOrderIterator<T>(root, k);}
 
 template <typename T>
 InOrderIterator<T> tree<T>::end_in_order() {
-    return InOrderIterator<T>(nullptr);
-}
+        return InOrderIterator<T>(nullptr, k);}
 
 template <typename T>
 HeapIterator<T> tree<T>::begin_heap() {

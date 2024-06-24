@@ -41,6 +41,16 @@ bool Complex::operator!=(const Complex& other) const {
     return !(*this == other);
 }
 
+bool Complex::operator>(const Complex& other) const {
+    if (real > other.real) {
+        return true;
+    }
+    if (real == other.real && imag > other.imag) {
+        return true;
+    }
+    return false;
+}
+
 std::ostream& operator<<(std::ostream& os, const Complex& c) {
     os << std::fixed << std::setprecision(2); // Set precision to 2 decimal places
     os << "(" << c.real << " + " << c.imag << "i)";

@@ -51,6 +51,7 @@ BFSIterator<T>& BFSIterator<T>::operator++() {
     return *this;
 }
 
+
 template <typename T>
 bool BFSIterator<T>::operator!=(const BFSIterator& other) const {
     return current != other.current;

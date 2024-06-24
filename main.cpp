@@ -136,6 +136,12 @@ int main() {
     }
     cout << endl;
 
+    cout << "Heap Traversal (Binary Tree): ";
+    for (auto it = binaryTree.begin_heap(); it != binaryTree.end_heap(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
+
     // Create a binary tree with Complex numbers
     tree<Complex> binaryComplexTree;
 
@@ -173,6 +179,12 @@ int main() {
 
     cout << "DFS Traversal (Binary Complex Tree): ";
     for (auto it = binaryComplexTree.begin_dfs_scan(); it != binaryComplexTree.end_dfs_scan(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
+
+    cout << "Heap Traversal (Binary Complex Tree): ";
+    for (auto it = binaryComplexTree.begin_heap(); it != binaryComplexTree.end_heap(); ++it) {
         cout << *it << " ";
     }
     cout << endl;
@@ -220,6 +232,13 @@ int main() {
         cout << *it << " ";
     }
     cout << endl;
+
+    cout << "Heap Traversal (k-3 Tree): ";
+    for (auto it = k3Tree.begin_heap(); it != k3Tree.end_heap(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
+    
 
     // Create a window to visualize the binary tree with integers
     sf::RenderWindow windowBinary(sf::VideoMode(1600, 1300), "Display Binary Tree"); // Maintain larger window size
