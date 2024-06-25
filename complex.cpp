@@ -42,13 +42,15 @@ bool Complex::operator!=(const Complex& other) const {
 }
 
 bool Complex::operator>(const Complex& other) const {
-    if (real > other.real) {
-        return true;
-    }
-    if (real == other.real && imag > other.imag) {
-        return true;
-    }
-    return false;
+    double thisMagnitudeSquared = real * real + imag * imag;
+    double otherMagnitudeSquared = other.real * other.real + other.imag * other.imag;
+    return thisMagnitudeSquared > otherMagnitudeSquared;
+}
+
+bool Complex::operator<(const Complex& other) const {
+    double thisMagnitudeSquared = real * real + imag * imag;
+    double otherMagnitudeSquared = other.real * other.real + other.imag * other.imag;
+    return thisMagnitudeSquared < otherMagnitudeSquared;
 }
 
 std::ostream& operator<<(std::ostream& os, const Complex& c) {

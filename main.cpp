@@ -5,8 +5,8 @@
 #include <algorithm>
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include <cmath> // Include for mathematical functions
-#include <sstream> // Include this for std::ostringstream
+#include <cmath> 
+#include <sstream> 
 
 using namespace std;
 
@@ -16,8 +16,8 @@ void drawTree(sf::RenderWindow &window, Node<T>* node, sf::Vector2f position, fl
     if (!node) return;
 
     sf::CircleShape circle(20);
-    circle.setFillColor(sf::Color(100, 100, 255)); // Change color to light blue
-    circle.setPosition(position.x - circle.getRadius(), position.y - circle.getRadius()); // Center the circle
+    circle.setFillColor(sf::Color(100, 100, 255)); 
+    circle.setPosition(position.x - circle.getRadius(), position.y - circle.getRadius()); 
     window.draw(circle);
 
     // Draw value in the node
@@ -33,30 +33,30 @@ void drawTree(sf::RenderWindow &window, Node<T>* node, sf::Vector2f position, fl
     oss << node->value;
     text.setString(oss.str());
     
-    text.setCharacterSize(14); // Slightly larger character size
-    text.setFillColor(sf::Color(255, 255, 255)); // Change text color to white
+    text.setCharacterSize(14); 
+    text.setFillColor(sf::Color(255, 255, 255)); 
     sf::FloatRect textRect = text.getLocalBounds();
-    text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f); // Center the text
+    text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f); 
     text.setPosition(position);
     window.draw(text);
 
     int childCount = node->children.size();
-    float startAngle = -90.0f - (childCount - 1) * 15.0f; // Adjust the starting angle
+    float startAngle = -90.0f - (childCount - 1) * 15.0f; 
 
     for (int i = 0; i < childCount; ++i) {
         auto& child = node->children[i];
         if (child) {
-            float angle = startAngle + i * 30.0f; // Spread the children more horizontally
+            float angle = startAngle + i * 30.0f; 
             float radianAngle = angle * M_PI / 180.0f;
             sf::Vector2f childPos = position + sf::Vector2f(cos(radianAngle) * horizontalSpacing, verticalSpacing);
             sf::Vertex line[] = {
                 sf::Vertex(position + sf::Vector2f(0, 20)),
                 sf::Vertex(childPos + sf::Vector2f(0, -20))
             };
-            line->color = sf::Color(255, 165, 0); // Change line color to orange
+            line->color = sf::Color(255, 165, 0); 
             window.draw(line, 2, sf::Lines);
 
-            drawTree(window, child.get(), childPos, horizontalSpacing / 2.0f, verticalSpacing * 1.2f); // Adjusted spacing
+            drawTree(window, child.get(), childPos, horizontalSpacing / 2.0f, verticalSpacing * 1.2f); 
         }
     }
 }
@@ -87,8 +87,8 @@ void visualizeTree(sf::RenderWindow& window, tree<T>& tree) {
 
     // Calculate position for drawing
     sf::Vector2f startPosition(window.getSize().x / 2, 50);
-    float horizontalSpacing = window.getSize().x / (pow(2, totalLevels - 1) + 1) * 2.5; // Adjusted horizontal spacing
-    float verticalSpacing = window.getSize().y / (totalLevels + 1) * 1.5; // Adjusted vertical spacing
+    float horizontalSpacing = window.getSize().x / (pow(2, totalLevels - 1) + 1) * 2.5; 
+    float verticalSpacing = window.getSize().y / (totalLevels + 1) * 1.5; 
 
     // Draw the tree
     drawTree(window, root, startPosition, horizontalSpacing, verticalSpacing);
@@ -96,15 +96,15 @@ void visualizeTree(sf::RenderWindow& window, tree<T>& tree) {
 
 int main() {
     // Create a binary tree with integers
-    tree<int> binaryTree;
+    tree<int> binaryTree(2);
 
     binaryTree.add_root(1);
-    binaryTree.add_sub_node(1, 2); // Left child of root
-    binaryTree.add_sub_node(1, 3); // Right child of root
-    binaryTree.add_sub_node(2, 4); // Left child of node 2
-    binaryTree.add_sub_node(2, 5); // Right child of node 2
-    binaryTree.add_sub_node(3, 6); // Left child of node 3
-    binaryTree.add_sub_node(3, 7); // Right child of node 3
+    binaryTree.add_sub_node(1, 2); 
+    binaryTree.add_sub_node(1, 3); 
+    binaryTree.add_sub_node(2, 4); 
+    binaryTree.add_sub_node(2, 5); 
+    binaryTree.add_sub_node(3, 6); 
+    binaryTree.add_sub_node(3, 7); 
 
     cout << "Pre-order Traversal (Binary Tree): ";
     for (auto it = binaryTree.begin_pre_order(); it != binaryTree.end_pre_order(); ++it) {
@@ -142,16 +142,31 @@ int main() {
     }
     cout << endl;
 
+    vector<int> heap_values;
+    for (auto it = binaryTree.begin_heap(); it != binaryTree.end_heap(); ++it) {
+        heap_values.push_back(*it);
+    }
+
+    // Sort values in ascending order
+    sort(heap_values.begin(), heap_values.end());
+
+    // Print heap values in ascending order
+    cout << "Heap Traversal: ";
+    for (const auto& val : heap_values) {
+        cout << val << " ";
+    }
+    cout << endl;
+
     // Create a binary tree with Complex numbers
-    tree<Complex> binaryComplexTree;
+    tree<Complex> binaryComplexTree(2);
 
     binaryComplexTree.add_root(Complex(1, 1));
-    binaryComplexTree.add_sub_node(Complex(1, 1), Complex(2, 2)); // Left child of root
-    binaryComplexTree.add_sub_node(Complex(1, 1), Complex(3, 3)); // Right child of root
-    binaryComplexTree.add_sub_node(Complex(2, 2), Complex(4, 4)); // Left child of node 2
-    binaryComplexTree.add_sub_node(Complex(2, 2), Complex(5, 5)); // Right child of node 2
-    binaryComplexTree.add_sub_node(Complex(3, 3), Complex(6, 6)); // Left child of node 3
-    binaryComplexTree.add_sub_node(Complex(3, 3), Complex(7, 7)); // Right child of node 3
+    binaryComplexTree.add_sub_node(Complex(1, 1), Complex(2, 2)); 
+    binaryComplexTree.add_sub_node(Complex(1, 1), Complex(3, 3)); 
+    binaryComplexTree.add_sub_node(Complex(2, 2), Complex(4, 4)); 
+    binaryComplexTree.add_sub_node(Complex(2, 2), Complex(5, 5)); 
+    binaryComplexTree.add_sub_node(Complex(3, 3), Complex(6, 6)); 
+    binaryComplexTree.add_sub_node(Complex(3, 3), Complex(7, 7)); 
 
     cout << "Pre-order Traversal (Binary Complex Tree): ";
     for (auto it = binaryComplexTree.begin_pre_order(); it != binaryComplexTree.end_pre_order(); ++it) {
@@ -238,10 +253,9 @@ int main() {
         cout << *it << " ";
     }
     cout << endl;
-    
 
     // Create a window to visualize the binary tree with integers
-    sf::RenderWindow windowBinary(sf::VideoMode(1600, 1300), "Display Binary Tree"); // Maintain larger window size
+    sf::RenderWindow windowBinary(sf::VideoMode(1600, 1300), "Display Binary Tree"); 
 
     while (windowBinary.isOpen()) {
         sf::Event event;
@@ -256,7 +270,7 @@ int main() {
     }
 
     // Create a window to visualize the binary tree with complex numbers
-    sf::RenderWindow windowComplex(sf::VideoMode(1600, 1300), "Display Binary Complex Tree"); // Maintain larger window size
+    sf::RenderWindow windowComplex(sf::VideoMode(1600, 1300), "Display Binary Complex Tree"); 
 
     while (windowComplex.isOpen()) {
         sf::Event event;
@@ -271,7 +285,7 @@ int main() {
     }
 
     // Create a window to visualize the k-3 tree with integers
-    sf::RenderWindow windowK3(sf::VideoMode(1600, 1300), "Display k-3 Tree"); // Maintain larger window size
+    sf::RenderWindow windowK3(sf::VideoMode(1600, 1300), "Display k-3 Tree"); 
 
     while (windowK3.isOpen()) {
         sf::Event event;

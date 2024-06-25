@@ -22,6 +22,7 @@ public:
     bool operator==(const Complex& other) const;
     bool operator!=(const Complex& other) const;
     bool operator>(const Complex& other) const;
+    bool operator<(const Complex& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const Complex& c);
 };

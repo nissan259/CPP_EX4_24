@@ -121,6 +121,22 @@ TEST_CASE("Heap Iterator for int") {
         ++i;
     }
 }
+TEST_CASE("Heap Iterator for int") {
+    tree<int> tr(2);
+    tr.add_root(5);
+    tr.add_sub_node(5, 3);
+    tr.add_sub_node(5, 8);
+    tr.add_sub_node(3, 1);
+    tr.add_sub_node(3, 2);
+
+    std::vector<int> heap_order = {1, 2, 3, 5, 8};
+    int i = 0;
+    for (auto it = tr.begin_heap(); it != tr.end_heap(); ++it) {
+        CHECK(*it == heap_order[i]);
+        ++i;
+    }
+}
+
 
 // Basic Operations and Iterators for tree<double>
 TEST_CASE("Tree Basic Operations for double") {
